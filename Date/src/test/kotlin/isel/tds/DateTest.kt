@@ -6,6 +6,7 @@ import org.example.isel.tds.isLeapYear
 import org.example.isel.tds.plus
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import java.lang.Thread.sleep
 import kotlin.test.assertFailsWith
 
 class DateTest {
@@ -169,6 +170,18 @@ class DateTest {
         val sut = Date(2023, 3, 2)
         assertEquals("2023-03-02", sut.toString())
     }
+
+    @Test
+    fun testLotOfDates(){
+        println("start")
+        val dates = (1..1000).map { Date(2000, 1, 1) + it }
+        //dates.forEach { println(it) }
+        println("sleep")
+        sleep(60000)
+        println(dates.size)
+        println("end")
+    }
+
 }
 
 
