@@ -38,7 +38,7 @@ class MutableStackWithMutableList<T> {
 }
 
 //3rd version
-class Stack<T> {
+class MutableStack<T> {
     private class Node<E>(val elem: E, val next: Node<E>?)
     private var head: Node<T>? = null
 
@@ -58,7 +58,7 @@ class Stack<T> {
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other !is Stack<*>) return false
+        if (other !is MutableStack<*>) return false
         var n1 = head
         var n2 = other.head
         while (n1 != null && n2 != null) {
