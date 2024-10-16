@@ -13,11 +13,18 @@ object ConsoleApplication {
                 if(command == null){
                     println("Invalid command $cmdName")
                     continue
-                }
-                if(command.isToFinish) break
-                board = command.execute(argList, board)
+                }else try {
+                    if (command.isToFinish) break
+                    board = command.execute(argList, board)
 
-                board.show()
+                    board.show()
+                }catch (e: IllegalStateException) {
+                    println(e.message)
+                }catch (e: IllegalArgumentException) {
+                    println("${e.message}\nUse: $cmdName")
+                }catch (e: Exception) {
+                    println("Error: ${e.message}")
+                }
             }
     }
 }
