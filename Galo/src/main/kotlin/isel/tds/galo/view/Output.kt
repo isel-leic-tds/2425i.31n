@@ -33,3 +33,13 @@ fun Board.show() {
     } )
 }
 
+fun Game.show() = this.board?.show()
+
+fun Game.showScore() {
+    print("Score:")
+    score.forEach { (player, value) ->
+        print(" ${player ?: "Draws"}=$value ")
+    }
+    println()
+}
+

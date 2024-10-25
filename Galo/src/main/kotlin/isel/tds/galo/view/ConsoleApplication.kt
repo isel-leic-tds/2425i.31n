@@ -1,11 +1,14 @@
 package isel.tds.galo.view
 
-import isel.tds.galo.model.Board
+import isel.tds.galo.model.Game
+import isel.tds.galo.storage.GameSerializer
+import isel.tds.galo.storage.TextFileStorage
 
 object ConsoleApplication {
     fun start(){
-            val commands: Map<String, Command> = getCommands()
-            var board: Board? = null
+            val commands: Map<String, Command> =
+                getCommands(TextFileStorage("games", GameSerializer))
+            var game = Game()
             while(true){
                 val (cmdName, argList)= readCommand()
 
@@ -15,9 +18,9 @@ object ConsoleApplication {
                     continue
                 }else try {
                     if (command.isToFinish) break
-                    board = command.execute(argList, board)
+                    game = command.execute(argList, game)
 
-                    board.show()
+                    game.show()
                 }catch (e: IllegalStateException) {
                     println(e.message)
                 }catch (e: IllegalArgumentException) {

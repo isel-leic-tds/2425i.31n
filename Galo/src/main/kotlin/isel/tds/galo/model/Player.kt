@@ -5,3 +5,8 @@ enum class Player {
 
     val other get() = if (this == X) O else X
 }
+
+fun String.toPlayerOrNull() = Player.entries.firstOrNull {it.name==this}
+fun String.toPlayer() = Player.entries.first { it.name==this }
+
+

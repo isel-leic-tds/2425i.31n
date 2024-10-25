@@ -1,41 +1,43 @@
 package isel.tds.galo.view
 
-import isel.tds.galo.model.Board
-import isel.tds.galo.model.play
-import isel.tds.galo.model.toPositionOrNull
+import isel.tds.galo.model.*
+import isel.tds.galo.storage.Storage
 
-abstract class Command(val isToFinish: Boolean=false) {
-    abstract fun execute(args: List<String>, board: Board?): Board
-//Alternativa a ter a pro definida no construtor
-//    abstract val isToFinish: Boolean
-}
+class Command(
+    val isToFinish: Boolean=false,
+    val execute: (args: List<String>, game: Game) -> Game
+        = { _, game -> game}
+)
 
-object Exit : Command(isToFinish = true) {
-    override fun execute(args: List<String>, board: Board?): Board {
-        return Board()
-    }
-//    override val isToFinish = true
-}
-
-object New : Command() {
-    override fun execute(args: List<String>, board: Board?): Board {
-        return Board()
-    }
-}
-
-object Play : Command() {
-    override fun execute(args: List<String>, board: Board?): Board {
-        requireNotNull(board) { "Game not started" }
+private val play = Command() {args, game ->
+        requireNotNull(game) { "Game not started" }
         val arg = requireNotNull(args.firstOrNull()) { "Missing position" }
-//        val pos = requireNotNull(arg.toIntOrNull()) { "Invalid pos $arg" }
         val pos = requireNotNull(arg.toIntOrNull()?.toPositionOrNull()) { "Invalid position $arg" }
-        return board.play(pos)
+        game.play(pos)
     }
-}
 
-fun getCommands(): Map<String, Command> =
+private fun storageCommand(exec: (Game, String) -> Game) =
+    Command() { args, game ->
+        val name = requireNotNull(args.firstOrNull()) { "Missing name" }
+        require(name.isNotBlank() && name.all { it.isLetter() }) {
+            "Invalid name $name"
+        }
+        exec(game, name)
+    }
+
+typealias GameStorage = Storage<String, Game>
+
+fun getCommands(st: GameStorage): Map<String, Command> =
     mapOf(
-        "EXIT" to Exit,
-        "NEW" to New,
-        "PLAY" to Play
+        "EXIT" to Command(isToFinish = true),
+        "NEW" to Command {_, game -> game.newBoard()},
+        "PLAY" to play,
+        "SHOW" to Command{ _, game -> game.also { it.showScore() }},
+        "SAVE" to storageCommand { game, name -> game.also {
+            try { st.create(name, game) }
+            catch (e: Exception) { error("Game $name already exists") }
+        } },
+        "LOAD" to storageCommand { _, name ->
+            checkNotNull(st.read(name)) { "Game $name not found" }
+        }
     )

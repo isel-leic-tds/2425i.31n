@@ -8,6 +8,8 @@ value class Position private constructor( val index:Int){
     val backSlash get() = row == col
     val slash get() = row + col == BOARD_SIZE - 1
 
+    override fun toString() = "$index"
+
     companion object{
         val values = List(BOARD_CELLS){Position(it)}
 
