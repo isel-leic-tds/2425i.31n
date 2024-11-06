@@ -65,12 +65,29 @@ const val BOARD_CELLS = BOARD_SIZE * BOARD_SIZE
 //}
 typealias Moves = Map<Position, Player>
 
-sealed class Board(val moves: Moves)
+sealed class Board(val moves: Moves){
+    override fun equals(other: Any?) = other is Board && isEquals(other)
+    override fun hashCode() = moves.hashCode() + hashAdd()
+}
 class BoardRun(moves: Moves= emptyMap(), val turn: Player) : Board(moves)
 class BoardWin(moves: Moves, val winner: Player): Board(moves)
 class BoardDraw(moves: Moves) : Board(moves)
 //class BoardXyz():Board(emptyMap())
 //Produces Error because the when is not exaustive anymore
+
+fun Board.isEquals(other: Board): Boolean =
+    when (this) {
+        is BoardRun -> other is BoardRun && turn == other.turn
+        is BoardWin -> other is BoardWin && winner == other.winner
+        is BoardDraw -> other is BoardDraw
+    } && moves == other.moves
+
+
+private fun Board.hashAdd(): Int = when (this) {
+    is BoardRun -> turn.ordinal
+    is BoardWin -> winner.ordinal
+    is BoardDraw -> 0
+}
 
 fun Board.play(pos: Position): Board = when(this) {
     is BoardRun -> {

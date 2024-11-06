@@ -21,7 +21,7 @@ class TextFileStorage<Key, Data>(
 
     override fun create(key: Key, data: Data) = with(key) {
         check( !exists() ) { "File $key exists" }
-        writeText(serializer.serialize(data))
+        this.writeText(serializer.serialize(data))
     }
 
     override fun read(key: Key): Data? = with(key) {
