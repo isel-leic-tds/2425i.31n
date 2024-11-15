@@ -20,8 +20,8 @@ import androidx.compose.ui.window.application
 @Preview
 fun App(window: ComposeWindow) {
     var text by remember { mutableStateOf("Hello, World!") }
-    var text2 by remember { mutableStateOf("Hello, World2!") }
-
+    var text2 = mutableStateOf("Hello, World2!")
+    println("App lambda")
     MaterialTheme {
         Column(
             modifier = Modifier
@@ -30,6 +30,7 @@ fun App(window: ComposeWindow) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row {
+                println("Row Lambda")
                 Button(
                     onClick = {
                         text = "Hello, Desktop! ${System.currentTimeMillis()}"
@@ -43,9 +44,9 @@ fun App(window: ComposeWindow) {
             }
             Row {
                 Button(onClick = {
-                    text2 = "Hello, Desktop! ${System.currentTimeMillis()}"
+                    text2.value = "Hello, Desktop! ${System.currentTimeMillis()}"
                 }) {
-                    Text(text2)
+                    Text(text2.value)
                 }
             }
         }
@@ -67,3 +68,4 @@ fun main() {
 fun log(label: String) {
     println("$label thread=${Thread.currentThread().name}")
 }
+
