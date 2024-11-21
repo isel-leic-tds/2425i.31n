@@ -14,7 +14,7 @@ val LINE_WIDTH = 5.dp
 val GRID_WIDTH = CELL_SIZE * BOARD_SIZE + LINE_WIDTH * (BOARD_SIZE - 1)
 
 @Composable
-fun GridView(board: Board, onClickCell: (Position) -> Unit= {}) {
+fun GridView(moves: Moves?, onClickCell: (Position) -> Unit= {}) {
     Column(
         modifier = Modifier.size(GRID_WIDTH).background(Color.Black),
         verticalArrangement = Arrangement.SpaceBetween
@@ -27,7 +27,7 @@ fun GridView(board: Board, onClickCell: (Position) -> Unit= {}) {
                 repeat(BOARD_SIZE) { col ->
                     val pos = Position(lin * BOARD_SIZE + col)
                     PlayerView(
-                        player = board.moves[pos],
+                        player = moves?.get(pos),
                         size = CELL_SIZE,
                         modifier = Modifier.background(Color.White),
                         onClick = { onClickCell(pos) }
@@ -41,5 +41,5 @@ fun GridView(board: Board, onClickCell: (Position) -> Unit= {}) {
 @Composable
 @Preview
 fun GridPreview() {
-    GridView(Board())
+    GridView(Board().moves)
 }

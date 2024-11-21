@@ -29,7 +29,7 @@ fun main() = application {
 fun GridApp() {
     var board by remember { mutableStateOf(Board()) }
     MaterialTheme {
-        GridView(board, onClickCell = { pos ->
+        GridView(board?.moves, onClickCell = { pos ->
             try {
                 board = board.play(pos)
             } catch (ex: Exception) {

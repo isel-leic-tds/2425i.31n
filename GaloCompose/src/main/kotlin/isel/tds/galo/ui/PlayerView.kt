@@ -19,7 +19,7 @@ import isel.tds.galo.model.Player
 fun PlayerView(
     player: Player?,
     size: Dp = 100.dp,
-    modifier: Modifier = Modifier.background(Color.White),
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
     val modifier = modifier.size(size)
