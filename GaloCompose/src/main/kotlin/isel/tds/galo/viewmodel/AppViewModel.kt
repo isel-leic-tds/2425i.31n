@@ -7,15 +7,11 @@ import isel.tds.galo.model.*
 import isel.tds.galo.storage.GameSerializer
 import isel.tds.galo.storage.MongoDriver
 import isel.tds.galo.storage.MongoStorage
-import isel.tds.galo.storage.TextFileStorage
 import isel.tds.galo.view.InputName
 
 class AppViewModel(driver: MongoDriver) {
 
-    private val storage =
-        MongoStorage<Name, Game>("games", driver, GameSerializer)
-
-    var clash by mutableStateOf(Clash(storage))
+    var clash by mutableStateOf(Clash(MongoStorage<Name, Game>("games", driver, GameSerializer)))
         private set
     var showViewScore by mutableStateOf(false)
         private set
@@ -37,6 +33,7 @@ class AppViewModel(driver: MongoDriver) {
         } catch (e: Exception) {        // Report exceptions in ErrorDialog
             errorMessage = e.message
         }
+
     fun hideError() {
         errorMessage = null
     }
@@ -45,32 +42,23 @@ class AppViewModel(driver: MongoDriver) {
     fun play(pos: Position) = exec { play(pos) }
     fun refresh() = exec(Clash::refresh)
 
-    fun toggleViewScore(){
-        showViewScore=!showViewScore
+    fun toggleViewScore() {
+        showViewScore = !showViewScore
     }
 
-    fun hideViewScore(){
-        showViewScore=false
+    fun hideViewScore() {
+        showViewScore = false
     }
 
-    fun start(name: Name? = null) {
-        if (name == null) inputName = InputName.ForStart
-        else {
-            cancelInput()
-            exec { startClash(name) }
-        }
-    }
+    fun openStartDialog() { inputName = InputName.ForStart }
+    fun openJoinDialog() { inputName = InputName.ForJoin }
+    private fun closeStartOrJoinDialog() { inputName = null }
 
+    fun start(name: Name){ cleanupAndExec {startClash(name)}}
+    fun join(name: Name) { cleanupAndExec {joinClash(name) }}
 
-    fun join(name: Name? = null) {
-        if (name == null) inputName = InputName.ForJoin
-        else {
-            cancelInput()
-            exec { joinClash(name) }
-        }
-    }
-
-    fun cancelInput() {
-        inputName = null
+    private fun cleanupAndExec(action: Clash.(name: Name)->Clash) {
+        closeStartOrJoinDialog()
+        exec { action(name) }
     }
 }

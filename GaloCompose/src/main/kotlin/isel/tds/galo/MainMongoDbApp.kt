@@ -5,7 +5,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.window.*
-import isel.tds.galo.model.refresh
 import isel.tds.galo.storage.MongoDriver
 import isel.tds.galo.view.*
 import isel.tds.galo.viewmodel.AppViewModel
@@ -37,8 +36,8 @@ fun FrameWindowScope.GridApp(driver: MongoDriver, onExit: () -> Unit) {
     MaterialTheme {
         MenuBar {
             Menu("Game") {
-                Item("Start game", onClick = vm::start)
-                Item("Join game", onClick = vm::join)
+                Item("Start game", onClick = vm::openStartDialog)
+                Item("Join game", onClick = vm::openJoinDialog)
                 Item("Refresh", enabled = vm.hasClash, onClick = vm::refresh)
                 Item("New Board", onClick = vm::newBoard)
                 Item("Show Score", onClick = vm::toggleViewScore)
@@ -54,7 +53,7 @@ fun FrameWindowScope.GridApp(driver: MongoDriver, onExit: () -> Unit) {
         vm.inputName?.let {
             StartOrJoinDialog(
                 type = it,
-                onCancel = vm::cancelInput,
+                onCancel = vm::closeStartOrJoinDialog,
                 onAction = if (it == InputName.ForStart) vm::start else vm::join
             )
         }
