@@ -48,7 +48,7 @@ fun FrameWindowScope.GridApp(driver: MongoDriver, onExit: () -> Unit) {
             GridView(vm.board?.moves, onClickCell = vm::play)
             StatusBar(vm.board, vm.sidePlayer)
         }
-        if (vm.showViewScore)
+        if (vm.showViewScore.value)
             ScoreDialog(vm.score, vm.name, onClose = vm::hideViewScore)
         vm.inputName?.let {
             StartOrJoinDialog(

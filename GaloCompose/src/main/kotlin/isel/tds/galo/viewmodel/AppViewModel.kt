@@ -13,7 +13,7 @@ class AppViewModel(driver: MongoDriver) {
 
     var clash by mutableStateOf(Clash(MongoStorage<Name, Game>("games", driver, GameSerializer)))
         private set
-    var showViewScore by mutableStateOf(false)
+    var showViewScore = mutableStateOf(false)
         private set
     val score: Score get() = (clash as ClashRun).game.score
     var inputName by mutableStateOf<InputName?>(null) //StartOrJoinDialog
@@ -21,7 +21,7 @@ class AppViewModel(driver: MongoDriver) {
     val hasClash: Boolean get() = clash is ClashRun
     var errorMessage by mutableStateOf<String?>(null) //ErrorDialog state
         private set
-    val name: Name get() = (clash as ClashRun).id
+    val name: Name? get() = (clash as? ClashRun)?.id
 
     val board: Board? get() = (clash as? ClashRun)?.game?.board
     val sidePlayer: Player? get() = (clash as? ClashRun)?.sidePlayer
@@ -31,6 +31,7 @@ class AppViewModel(driver: MongoDriver) {
             //throw Exception("My blow up")
             clash = clash.fx()
         } catch (e: Exception) {        // Report exceptions in ErrorDialog
+            e.printStackTrace()
             errorMessage = e.message
         }
 
@@ -43,21 +44,21 @@ class AppViewModel(driver: MongoDriver) {
     fun refresh() = exec(Clash::refresh)
 
     fun toggleViewScore() {
-        showViewScore = !showViewScore
+        showViewScore.value = !showViewScore.value
     }
 
     fun hideViewScore() {
-        showViewScore = false
+        showViewScore.value = false
     }
 
     fun openStartDialog() { inputName = InputName.ForStart }
     fun openJoinDialog() { inputName = InputName.ForJoin }
-    private fun closeStartOrJoinDialog() { inputName = null }
+    fun closeStartOrJoinDialog() { inputName = null }
 
     fun start(name: Name){ cleanupAndExec {startClash(name)}}
     fun join(name: Name) { cleanupAndExec {joinClash(name) }}
 
-    private fun cleanupAndExec(action: Clash.(name: Name)->Clash) {
+    private fun cleanupAndExec(action: Clash.(name: Name?)->Clash) {
         closeStartOrJoinDialog()
         exec { action(name) }
     }
