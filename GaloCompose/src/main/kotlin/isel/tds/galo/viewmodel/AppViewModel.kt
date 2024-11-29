@@ -31,6 +31,7 @@ class AppViewModel(driver: MongoDriver) {
             //throw Exception("My blow up")
             clash = clash.fx()
         } catch (e: Exception) {        // Report exceptions in ErrorDialog
+            e.printStackTrace()
             errorMessage = e.message
         }
 
@@ -52,13 +53,13 @@ class AppViewModel(driver: MongoDriver) {
 
     fun openStartDialog() { inputName = InputName.ForStart }
     fun openJoinDialog() { inputName = InputName.ForJoin }
-    private fun closeStartOrJoinDialog() { inputName = null }
+    fun closeStartOrJoinDialog() { inputName = null }
 
-    fun start(name: Name){ cleanupAndExec {startClash(name)}}
-    fun join(name: Name) { cleanupAndExec {joinClash(name) }}
+    fun start(name: Name){ cleanupAndExec { startClash(name)}}
+    fun join(name: Name) { cleanupAndExec { joinClash(name) }}
 
-    private fun cleanupAndExec(action: Clash.(name: Name)->Clash) {
+    private fun cleanupAndExec(action: Clash.()->Clash) {
         closeStartOrJoinDialog()
-        exec { action(name) }
+        exec { action() }
     }
 }
