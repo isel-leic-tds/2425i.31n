@@ -43,7 +43,7 @@ import isel.tds.galo.model.Score
 //)
 
 @Composable
-fun ScoreDialog(score: Score, name: Name?, onClose: () -> Unit) =
+fun ScoreDialog(score: Score, name: Name, onClose: () -> Unit) =
     DialogBase("Score in $name", onClose) {
         Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
             Column {
