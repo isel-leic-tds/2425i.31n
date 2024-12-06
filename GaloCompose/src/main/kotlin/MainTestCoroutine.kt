@@ -27,7 +27,7 @@ fun main() = application {
         Row {
             Button(enabled = clickable, onClick = {
                 println("Clicked")
-                job = scope.launch {
+                job = scope.launch(Dispatchers.Default) {
                     testLog("inside Corotine")
                     repeat(5) { print('.'); delay(1000) }
                     job = null

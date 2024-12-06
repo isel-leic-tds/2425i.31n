@@ -30,8 +30,8 @@ fun main() =
 
 @Composable
 fun FrameWindowScope.GridApp(driver: MongoDriver, onExit: () -> Unit) {
-
-    val vm = remember { AppViewModel(driver) }
+    val scope = rememberCoroutineScope()
+    val vm = remember { AppViewModel(driver, scope) }
 
     MaterialTheme {
         MenuBar {
@@ -58,6 +58,7 @@ fun FrameWindowScope.GridApp(driver: MongoDriver, onExit: () -> Unit) {
             )
         }
         vm.errorMessage?.let { ErrorDialog(it, onClose = vm::hideError) }
+        if (vm.isWaiting) WaitingIndicator()
     }
 
 }
