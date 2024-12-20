@@ -14,12 +14,12 @@ class Score(
 private fun game(winner: Player) = Score(
     placard = "Game $winner",
     isGame = true,
-    next = { win: Player -> error("Is over") }
+    next = { playerThatWonThePoint: Player -> error("Is over") }
 )
 
 private fun advantage(player: Player): Score = Score(
     placard = "Advantage $player",
-    next = { win -> if (win == player) game(win) else deuce() }
+    next = { playerThatWonThePoint -> if (playerThatWonThePoint == player) game(playerThatWonThePoint) else deuce() }
 )
 
 private fun deuce() = Score("Deuce", next = ::advantage)
